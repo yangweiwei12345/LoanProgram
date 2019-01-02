@@ -1,43 +1,56 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React from 'react';
+import { Text, View, Image } from 'react-native';
+import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import { Images, variable } from './src/assets';
+const { primary, gray } = variable;
 
-class App extends Component {
-
+class HomeScreen extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Home!</Text>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+class SettingsScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Settings!</Text>
+      </View>
+    );
+  }
+}
 
+const TabNavigator = createBottomTabNavigator({
+    Home: HomeScreen,
+    List: SettingsScreen,
+    My: SettingsScreen,
+}, {
+    navigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused, horizontal, tintColor }) => {
+            const { routeName } = navigation.state;
+            let iconName;
+            if (routeName === 'Home') {
+                iconName = `home${focused ? '' : '_active'}`;
+            } else if (routeName === 'List') {
+                iconName = `list${focused ? '' : '_active'}`;
+            } else if (routeName === 'My') {
+                iconName = `my${focused ? '' : '_active'}`;
+            }
 
-export default App;
+            return <Image style={{width: 20, height: 20}} source={Images[iconName]} />;
+      },
+    }),
+    initialRouteName: 'Home',
+    tabBarOptions: {
+        activeTintColor: primary,
+        inactiveTintColor: gray,
+        showIcon: true
+    },
+  });
+
+export default createAppContainer(TabNavigator);
