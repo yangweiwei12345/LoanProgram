@@ -3,31 +3,14 @@ import { Text, View, Image } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import { Images, variable } from './src/assets';
+import Pages from './src/pages';
 const { primary, gray } = variable;
-
-class HomeScreen extends React.Component {
-	render() {
-		return (
-			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-				<Text>Home!</Text>
-			</View>
-		);
-	}
-}
-
-class SettingsScreen extends React.Component {
-	render() {
-		return (
-			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-				<Text>Settings!</Text>
-			</View>
-		);
-	}
-}
+const { HomePage, ListPage, MyPage } = Pages;
+console.log(HomePage);
 
 const TabNavigator = createBottomTabNavigator({
 	Home: {
-        screen: HomeScreen,
+        screen: HomePage,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: "首页",
             tabBarIcon: ({ focused }) => {
@@ -46,7 +29,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 	List: {
-        screen: SettingsScreen,
+        screen: ListPage,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: "列表",
             tabBarIcon: ({ focused }) => {
@@ -62,7 +45,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 	My: {
-        screen: SettingsScreen,
+        screen: MyPage,
         navigationOptions:({ navigation }) => ({
             tabBarLabel: "我的",
             tabBarIcon: ({ focused }) => {

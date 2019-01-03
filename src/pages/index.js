@@ -2,8 +2,10 @@ import Home from './home';
 import List from './list';
 import My from './my';
 
-export {
+const Pages = {
     ...Home,
     ...List,
     ...My
 };
+
+export default Pages

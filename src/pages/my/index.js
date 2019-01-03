@@ -1,5 +1,5 @@
 import MyPage from './MyPage';
 
-export {
+export default {
     MyPage
 };

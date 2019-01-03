@@ -1,5 +1,5 @@
 import ListPage from './ListPage';
 
-export {
+export default {
     ListPage
 };
