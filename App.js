@@ -4,33 +4,14 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import { Images, variable } from './src/assets';
 const { primary, gray } = variable;
-
-class HomeScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Home!</Text>
-      </View>
-    );
-  }
-}
-
-class SettingsScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Settings!</Text>
-      </View>
-    );
-  }
-}
+import { HomePage, ListPage, MyPage } from './src/pages';
 
 const TabNavigator = createBottomTabNavigator({
-    Home: HomeScreen,
-    List: SettingsScreen,
-    My: SettingsScreen,
+    Home: HomePage,
+    List: ListPage,
+    My: MyPage,
 }, {
-    navigationOptions: ({ navigation }) => ({
+    defaultNavigationOptions: ({ navigation }) => ({
         tabBarIcon: ({ focused, horizontal, tintColor }) => {
             const { routeName } = navigation.state;
             let iconName;
