@@ -29,7 +29,7 @@ const TabNavigator = createBottomTabNavigator({
 	Home: {
         screen: HomeScreen,
         navigationOptions: ({ navigation }) => ({
-            tabBarLabel: "首页1",
+            tabBarLabel: "首页",
             tabBarIcon: ({ focused }) => {
                 
                 let { isFocused } = navigation;
