@@ -4,34 +4,86 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import { Images, variable } from './src/assets';
 const { primary, gray } = variable;
-import { HomePage, ListPage, MyPage } from './src/pages';
+
+class HomeScreen extends React.Component {
+	render() {
+		return (
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+				<Text>Home!</Text>
+			</View>
+		);
+	}
+}
+
+class SettingsScreen extends React.Component {
+	render() {
+		return (
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+				<Text>Settings!</Text>
+			</View>
+		);
+	}
+}
 
 const TabNavigator = createBottomTabNavigator({
-    Home: HomePage,
-    List: ListPage,
-    My: MyPage,
-}, {
-    defaultNavigationOptions: ({ navigation }) => ({
-        tabBarIcon: ({ focused, horizontal, tintColor }) => {
-            const { routeName } = navigation.state;
-            let iconName;
-            if (routeName === 'Home') {
-                iconName = `home${focused ? '' : '_active'}`;
-            } else if (routeName === 'List') {
-                iconName = `list${focused ? '' : '_active'}`;
-            } else if (routeName === 'My') {
-                iconName = `my${focused ? '' : '_active'}`;
+	Home: {
+        screen: HomeScreen,
+        navigationOptions: ({ navigation }) => ({
+            tabBarLabel: "首页",
+            tabBarIcon: ({ focused }) => {
+                
+                let { isFocused } = navigation;
+                console.log(isFocused())
+                return (
+                    !isFocused()
+                        ? <Image style={{ width: 22, height: 22 }} source={Images["home"]} />
+                        : <Image style={{ width: 22, height: 22 }} source={Images["home_active"]} />
+                )
+            },
+            tabBaronPress: () => {
+                navigation.navigate('Home')
             }
-
-            return <Image style={{width: 20, height: 20}} source={Images[iconName]} />;
-      },
-    }),
-    initialRouteName: 'Home',
-    tabBarOptions: {
-        activeTintColor: primary,
-        inactiveTintColor: gray,
-        showIcon: true
+        })
     },
-  });
+	List: {
+        screen: SettingsScreen,
+        navigationOptions: ({ navigation }) => ({
+            tabBarLabel: "列表",
+            tabBarIcon: ({ focused }) => {
+
+                let { isFocused } = navigation;
+                
+                return (
+                    !isFocused()
+                        ? <Image style={{ width: 22, height: 22 }} source={Images["list"]} />
+                        : <Image style={{ width: 22, height: 22 }} source={Images["list_active"]} />
+                )
+			},
+        })
+    },
+	My: {
+        screen: SettingsScreen,
+        navigationOptions:({ navigation }) => ({
+            tabBarLabel: "我的",
+            tabBarIcon: ({ focused }) => {
+
+                let { isFocused } = navigation;
+                
+                return (
+                    !isFocused()
+                        ? <Image style={{ width: 22, height: 22 }} source={Images["my"]} />
+                        : <Image style={{ width: 22, height: 22 }} source={Images["my_active"]} />
+                )
+			},
+        })
+    },
+}, {
+		initialRouteName: 'Home',
+		tabBarOptions: {
+			activeTintColor: primary,
+			inactiveTintColor: gray,
+			showIcon: true
+		},
+	});
 
 export default createAppContainer(TabNavigator);

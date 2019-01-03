@@ -4,7 +4,7 @@ const TabBar = {
     list:           require('./list_line_icon.png'),
     list_active:    require('./list_icon.png'),
     my:             require('./my_line_icon.png'),
-    my_active:      require('./my_icon.png')
+    my_active:      require('./my_icon.png'),
 };
 
 export default TabBar;
