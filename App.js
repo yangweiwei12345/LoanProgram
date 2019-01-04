@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, Easing, Animated } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import { Images, variable } from './src/assets';
@@ -8,7 +8,6 @@ const { primary, gray } = variable;
 const { HomePage, ListPage, MyPage } = Pages;
 
 const stackConfig = {
-    headerMode: 'none',
     mode: 'modal',
     defaultNavigationOptions: {
       gesturesEnabled: false,
@@ -39,34 +38,43 @@ const stackConfig = {
     }),
 };
 
+const barConfig = {
+    defaultNavigationOptions: {
+        headerStyle: {
+            backgroundColor: '#fff',
+        },
+        headerTintColor: '#230E02',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        }
+    }
+}
+
 const HomeStack = createStackNavigator({
     Home: { screen: HomePage },
     List: { screen: ListPage }
 }, {
-    ...stackConfig
+    ...stackConfig,
+    ...barConfig
 });
 
 const ListStack = createStackNavigator({
     List: { screen: ListPage }
+}, {
+    ...stackConfig,
+    ...barConfig
 });
 
 const MyStack = createStackNavigator({
     My: { screen: MyPage }
+}, {
+    ...stackConfig,
+    ...barConfig
 });
-
-// const RootStack = createStackNavigator(
-//     {
-//       Home: HomePage,
-//       List: ListPage,
-//     },
-//     {
-//       initialRouteName: 'Home',
-//     }
-// );
 
 const TabNavigator = createBottomTabNavigator({
 	Home: {
-        screen: HomePage,
+        screen: HomeStack,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: "首页",
             tabBarIcon: ({ focused }) => {
@@ -85,7 +93,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 	List: {
-        screen: ListPage,
+        screen: ListStack,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: "列表",
             tabBarIcon: ({ focused }) => {
@@ -101,7 +109,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 	My: {
-        screen: MyPage,
+        screen: MyStack,
         navigationOptions:({ navigation }) => ({
             tabBarLabel: "我的",
             tabBarIcon: ({ focused }) => {
