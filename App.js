@@ -6,7 +6,6 @@ import { Images, variable } from './src/assets';
 import Pages from './src/pages';
 const { primary, gray } = variable;
 const { HomePage, ListPage, MyPage } = Pages;
-console.log(HomePage);
 
 const TabNavigator = createBottomTabNavigator({
 	Home: {
@@ -61,7 +60,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 }, {
-		initialRouteName: 'Home',
+		initialRouteName: 'My',
 		tabBarOptions: {
 			activeTintColor: primary,
 			inactiveTintColor: gray,
