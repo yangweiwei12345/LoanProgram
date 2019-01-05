@@ -56,19 +56,34 @@ class My extends Component {
             tabList: [
                 {
                     text: "留言反馈",
-                    iconName: "leaveMessage"
+                    iconName: "leaveMessage",
+                    handleEvent: this.feedBack
                 },
                 {
                     text: "个人设置",
-                    iconName: "setting"
+                    iconName: "setting",
+                    handleEvent: this.setting
                 },
                 {
                     text: "邀请好友",
-                    iconName: "invitation"
+                    iconName: "invitation",
+                    handleEvent: this.invitation
                 },
             ],
             isLogin: false
         }
+    }
+
+    feedBack = () => {
+        this.props.navigation.navigate('FeedBack')
+    }
+
+    setting = () => {
+        this.props.navigation.navigate('Setting')
+    }
+
+    invitation = () => {
+        this.props.navigation.navigate('Invitation')
     }
 
     render() {
@@ -107,6 +122,7 @@ class My extends Component {
                                 key={ i }
                                 iconName={ v.iconName }
                                 text={ v.text }
+                                handleEvent={ v.handleEvent }
                             />
                         )
                     })
