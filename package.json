@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "prop-types": "^15.6.2",
     "react": "16.6.1",
     "react-native": "0.57.7",
     "react-native-gesture-handler": "^1.0.12",
+    "react-native-scrollable-tab-view": "^0.10.0",
     "react-native-swiper": "^1.5.14",
     "react-navigation": "^3.0.9"
   },

@@ -3,6 +3,8 @@ import { Text, View, Button, ScrollView, StyleSheet, Image } from 'react-native'
 
 import Swiper from '../components/swiper';
 import Container from '../components/container';
+import Section from '../components/section';
+
 import { PX2DP_H, PX2DP_W } from '../../utils';
 import { Images, variable } from '../../assets';
 const { primary, gray } = variable;
@@ -19,9 +21,11 @@ const bannerData = [{
 }];
 
 export default class Home extends Component {
+
     static navigationOptions = {
         title: '贷款超市',
     };
+
     render() {
         return (
             <ScrollView
@@ -50,51 +54,8 @@ export default class Home extends Component {
                     </Container>
 
                     <Title title="今日爆款" />
-                    <Container>
-                        <View style={hotStyles.hot_item}>
-                            <View style={hotStyles.hot_item_tit}>
-                                <Image style={hotStyles.hot_item_tit_img} source={Images.card_c_icon} />
-                                <Text style={hotStyles.hot_item_tit_txt}>融360</Text>
-                            </View>
-                            <View style={hotStyles.hot_item_body}>
-                                <View style={hotStyles.hot_item_left}>
-                                    <Text style={hotStyles.hot_item_left_money}>1000 - 5000</Text>
-                                    <Text style={hotStyles.hot_item_left_txt}>额度范围（元）</Text>
-                                </View>
-                                <View style={hotStyles.hot_item_center}></View>
-                                <View style={hotStyles.hot_item_right}>
-                                    <View style={hotStyles.hot_item_right_txt}>
-                                        <Text style={hotStyles.hot_item_right_tit}>融360放款速度：2小时</Text>
-                                        <Text style={hotStyles.hot_item_right_tit}>参考月费率：0.83-2.33%</Text>
-                                        <Text style={hotStyles.hot_item_right_tit}>贷款期限：15天</Text>
-                                    </View>
-                                    <Image style={hotStyles.hot_item_right_btn} source={Images.home_apply_bt} />
-                                </View>
-                            </View>
-                        </View>
-                    </Container>
-                    <Container>
-                        <View style={hotStyles.hot_item}>
-                            <View style={hotStyles.hot_item_tit}>
-                                <Image style={hotStyles.hot_item_tit_img} source={Images.card_c_icon} />
-                                <Text style={hotStyles.hot_item_tit_txt}>融360</Text>
-                            </View>
-                            <View style={hotStyles.hot_item_body}>
-                                <View style={hotStyles.hot_item_left}>
-                                    <Text style={hotStyles.hot_item_left_money}>1000 - 5000</Text>
-                                    <Text style={hotStyles.hot_item_left_txt}>额度范围（元）</Text>
-                                </View>
-                                <View style={hotStyles.hot_item_center}></View>
-                                <View style={hotStyles.hot_item_right}>
-                                    <View style={hotStyles.hot_item_right_txt}>
-                                        <Text style={hotStyles.hot_item_right_tit}>融360放款速度：2小时</Text>
-                                        <Text style={hotStyles.hot_item_right_tit}>参考月费率：0.83-2.33%</Text>
-                                        <Text style={hotStyles.hot_item_right_tit}>贷款期限：15天</Text>
-                                    </View>
-                                    <Image style={hotStyles.hot_item_right_btn} source={Images.home_apply_bt} />
-                                </View>
-                            </View>
-                        </View>
+                    <Container style={styles.container}>
+                        <Section />
                     </Container>
                 </View>
             </ScrollView>
@@ -106,7 +67,7 @@ const Box = (props) => {
     const { data } = props;
     return (
         <View style={styles.box}>
-            <Image style={styles.box_image} source={data.img} />
+            <Image resizeMode='stretch' style={styles.box_image} source={data.img} />
             <Text style={styles.box_tit}>{data.txt}</Text>
         </View>
     )
@@ -137,6 +98,9 @@ const Title = (props) => {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        marginBottom: 10
+    },
     scroll_wrapper: {
         flex: 1,
         backgroundColor: '#f8f8f8'
@@ -149,8 +113,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     body_wrapper: {
-        marginLeft: 15,
-        marginRight: 15
+        marginLeft: PX2DP_H(15),
+        marginRight: PX2DP_H(15)
     },
 
     platform_recommend: {
@@ -200,7 +164,7 @@ const styles = StyleSheet.create({
         height: PX2DP_H(75)
     },
     box_image: {
-        width: PX2DP_W(37),
+        width: PX2DP_W(38),
         height: PX2DP_H(37),
     },
     box_tit: {
@@ -226,64 +190,3 @@ const styles = StyleSheet.create({
         marginLeft: 10
     }
 })
-
-const hotStyles = StyleSheet.create({
-    hot_item: {
-        marginLeft: 15,
-        marginRight: 15,
-        marginTop: 20,
-        marginBottom: 20
-    },
-    hot_item_tit: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    hot_item_tit_img: {
-        width: PX2DP_W(22),
-        height: PX2DP_W(22)
-    },
-    hot_item_tit_txt: {
-        fontSize: 15,
-        color: '#230E02',
-        marginLeft: 10
-    },
-    hot_item_body: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    hot_item_left: {
-
-    },
-    hot_item_center: {
-        width: 2,
-        height: 24,
-        backgroundColor: '#eee',
-        marginLeft: 15,
-        marginRight: 15
-    },
-    hot_item_left_money: {
-        fontSize: 18,
-        color: '#230E02',
-        fontWeight: 'bold'
-    },
-    hot_item_left_txt: {
-        fontSize: 11,
-        color: '#949494',
-        marginTop: 10
-    },
-    hot_item_right: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    hot_item_right_txt: {
-    },
-    hot_item_right_tit: {
-        fontSize: 12,
-        color: '#666',
-        marginBottom: 6
-    },
-    hot_item_right_btn: {
-        width: PX2DP_W(60),
-        height: PX2DP_W(60)
-    }
-});
