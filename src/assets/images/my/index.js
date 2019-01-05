@@ -6,6 +6,9 @@ const my = {
     invitation:     require('./invite_icon.png'),
     loginLogo:      require('./entry_bt_icon.png'),
     Head:           require('./hs_icon.png'),
+    invitationFried:require('./invitation.png'),
+    one:            require('./one.png'),
+    three:            require('./three.png'),
 };
 
 export default my;

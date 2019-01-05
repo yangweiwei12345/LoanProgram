@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
     Text,
     View,
-    Image
+    Image,
+    TouchableOpacity
 } from 'react-native';
 import { Images } from '../../assets';
 
@@ -32,14 +33,22 @@ class TabList extends Component {
         super(props)
     }
 
+    handlePress = fn => {
+        fn && fn();
+    }
+
     render() {
         const {
             iconName,
-            text
+            text,
+            handleEvent
         } = this.props;
         return (
-            <View style={ styles.wrapper }>
-                <View style={ styles.tabInfo }>
+            <TouchableOpacity
+                style={ styles.wrapper }
+                onPress={ () => { this.handlePress(handleEvent) } }>
+                <View
+                    style={ styles.tabInfo }>
                     <Image
                         style={ styles.icon }
                         source={Images[iconName]}
@@ -50,7 +59,7 @@ class TabList extends Component {
                     // style={styles.topBackGround}
                     source={Images['right']}
                 />
-            </View>
+            </TouchableOpacity>
         );
     }
 }

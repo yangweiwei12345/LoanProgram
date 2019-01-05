@@ -5,9 +5,12 @@ import {
     Image,
     ImageBackground
 } from 'react-native';
+import { Images } from '../../assets';
 
 const styles = {
-    
+    wrapper: {
+        flex: 1,
+    }
 };
 
 class InvitationPage extends Component {
@@ -21,9 +24,11 @@ class InvitationPage extends Component {
 
     render() {
         return (
-            <View style={styles.wrapper}>
-                
-            </View>
+            <ImageBackground
+                style={ styles.wrapper }
+                source={ Images["invitationFried"] }
+            >
+            </ImageBackground>
         );
     }
 }
