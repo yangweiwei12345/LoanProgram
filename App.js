@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View, Image } from 'react-native';
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { Text, View, Image, Easing, Animated } from 'react-native';
+import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 
 import { Images, variable } from './src/assets';
 import Pages from './src/pages';
@@ -9,7 +9,7 @@ const { HomePage, ListPage, MyPage } = Pages;
 
 const TabNavigator = createBottomTabNavigator({
 	Home: {
-        screen: HomePage,
+        screen: HomeStack,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: "首页",
             tabBarIcon: ({ focused }) => {
@@ -28,7 +28,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 	List: {
-        screen: ListPage,
+        screen: ListStack,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: "列表",
             tabBarIcon: ({ focused }) => {
@@ -44,7 +44,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 	My: {
-        screen: MyPage,
+        screen: MyStack,
         navigationOptions:({ navigation }) => ({
             tabBarLabel: "我的",
             tabBarIcon: ({ focused }) => {
