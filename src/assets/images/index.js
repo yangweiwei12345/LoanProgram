@@ -4,6 +4,6 @@ import Home from './home';
 
 export default {
     ...TabBar,
-    ...Home,
-    ...My
+    ...My,
+    ...Home
 };
