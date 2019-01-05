@@ -52,8 +52,10 @@ export default class SwiperSlide extends Component {
 
 const styles = StyleSheet.create({
     wrapper: {
+        width: PX2DP_W(345),
         height: PX2DP_H(145),
-        justifyContent: 'center'
+        overflow: 'hidden',
+        marginLeft: 15
     },
     slide: {
         width: PX2DP_W(345),

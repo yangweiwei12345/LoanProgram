@@ -51,8 +51,7 @@ const barConfig = {
 }
 
 const HomeStack = createStackNavigator({
-    Home: { screen: HomePage },
-    List: { screen: ListPage }
+    Home: { screen: HomePage }
 }, {
     ...stackConfig,
     ...barConfig
@@ -80,7 +79,6 @@ const TabNavigator = createBottomTabNavigator({
             tabBarIcon: ({ focused }) => {
                 
                 let { isFocused } = navigation;
-                console.log(isFocused())
                 return (
                     !isFocused()
                         ? <Image style={{ width: 22, height: 22 }} source={Images["home"]} />
@@ -125,6 +123,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 }, {
+    initialRouteName: 'List',
     tabBarOptions: {
         activeTintColor: primary,
         inactiveTintColor: gray,
