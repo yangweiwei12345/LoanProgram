@@ -5,7 +5,88 @@ import { createStackNavigator, createBottomTabNavigator, createAppContainer } fr
 import { Images, variable } from './src/assets';
 import Pages from './src/pages';
 const { primary, gray } = variable;
-const { HomePage, ListPage, MyPage } = Pages;
+const {
+    HomePage,
+    ListPage,
+    MyPage,
+    FeedBackPage,
+    InvitationPage,
+    SettingPage,
+    LoginPage,
+    accountLoginPage,
+    forgetPasswordPage
+} = Pages;
+
+const stackConfig = {
+    mode: 'modal',
+    defaultNavigationOptions: {
+      gesturesEnabled: false,
+    },
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 300,
+        easing: Easing.out(Easing.poly(4)),
+        timing: Animated.timing,
+      },
+      screenInterpolator: sceneProps => {
+        const { layout, position, scene } = sceneProps;
+        const { index } = scene;
+
+        const height = layout.initHeight;
+        const translateY = position.interpolate({
+          inputRange: [index - 1, index, index + 1],
+          outputRange: [height, 0, 0],
+        });
+
+        const opacity = position.interpolate({
+          inputRange: [index - 1, index - 0.99, index],
+          outputRange: [0, 1, 1],
+        });
+
+        return { opacity, transform: [{ translateY }] };
+      },
+    }),
+};
+
+const barConfig = {
+    defaultNavigationOptions: {
+        headerStyle: {
+            backgroundColor: '#fff',
+        },
+        headerTintColor: '#230E02',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        }
+    }
+}
+
+const HomeStack = createStackNavigator({
+    Home: { screen: HomePage },
+    List: { screen: ListPage }
+}, {
+    ...stackConfig,
+    ...barConfig
+});
+
+const ListStack = createStackNavigator({
+    List: { screen: ListPage }
+}, {
+    ...stackConfig,
+    ...barConfig
+});
+
+const MyStack = createStackNavigator({
+    My: { screen: MyPage },    
+    FeedBack: { screen: FeedBackPage },    
+    Invitation: { screen: InvitationPage },    
+    Setting: { screen: SettingPage },    
+    Login: { screen: LoginPage },    
+    accountLogin: { screen: accountLoginPage },  
+    forgetPassword: { screen: forgetPasswordPage },  
+}, {
+    ...stackConfig,
+    ...barConfig
+});
 
 const TabNavigator = createBottomTabNavigator({
 	Home: {
@@ -60,12 +141,12 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 }, {
-		initialRouteName: 'My',
-		tabBarOptions: {
-			activeTintColor: primary,
-			inactiveTintColor: gray,
-			showIcon: true
-		},
-	});
+    initialRouteName: "Home",
+    tabBarOptions: {
+        activeTintColor: primary,
+        inactiveTintColor: gray,
+        showIcon: true
+    },
+});
 
 export default createAppContainer(TabNavigator);
