@@ -4,7 +4,8 @@ import {
     View,
     ScrollView,
     Image,
-    ImageBackground
+    ImageBackground,
+    TouchableOpacity
 } from 'react-native';
 import { Images } from '../../assets';
 import TabList from './TabList';
@@ -86,6 +87,10 @@ class My extends Component {
         this.props.navigation.navigate('Invitation')
     }
 
+    GoLogin = () => {
+        this.props.navigation.navigate('Login')
+    }
+
     render() {
         const {
             tabList,
@@ -101,17 +106,21 @@ class My extends Component {
                         <Text
                             style={ styles.title }
                         >我的</Text>
-                        {
-                            isLogin
-                                ?   <Image
-                                    style={ styles.portrait }
-                                    source={ Images['Head'] }
-                                />
-                                : <Image
-                                    style={ styles.portrait }
-                                    source={ Images['loginLogo'] }
-                                />
-                        }
+                        <TouchableOpacity
+                            style={ styles.portrait }
+                            onPress={ this.GoLogin }
+                            activeOpacity={ 1 }
+                        >
+                            {
+                                isLogin
+                                    ?   <Image
+                                        source={ Images['Head'] }
+                                    />
+                                    : <Image
+                                        source={ Images['loginLogo'] }
+                                    />
+                            }
+                        </TouchableOpacity>
                     </ImageBackground>
                 </View>
 
