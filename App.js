@@ -139,7 +139,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 }, {
-    initialRouteName: "List",
+    initialRouteName: "My",
     tabBarOptions: {
         activeTintColor: primary,
         inactiveTintColor: gray,

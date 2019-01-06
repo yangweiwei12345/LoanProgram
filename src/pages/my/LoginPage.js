@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {
     Text,
     View,
-    Image,
-    ImageBackground,
-    TouchableOpacity
+    TouchableOpacity,
 } from 'react-native';
 import Tab from '../components/Tab';
 import Button from '../components/Button';
+import Toast from 'react-native-root-toast';
+import { PX2DP_W, PX2DP_H } from '../../utils';
 
 const styles = {
     wrapper: {
@@ -35,13 +35,19 @@ const styles = {
 class LoginPage extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            verificationText: "发送验证码",
+            phoneNum: "", // 手机号码
+            verificationCode: "", // 验证码
+        }
     }
 
     static navigationOptions = {
         title: '登录',
     };
 
-    // 短信验证码
+    // 验证码
     sendMessage = () => {
         const styles = {
             text: {
@@ -62,16 +68,66 @@ class LoginPage extends Component {
                 borderColor: "#EEEEEE" 
             }
         }
+
+        const {
+            verificationText
+        } = this.state;
+
+        let interVal;
+
+        const sendVerification = () => {
+
+            if (this.state.verificationText !== "发送验证码") return;
+
+            let phoneReg = /^1[34578]\d{9}$/;
+
+            if ( this.state.phoneNum ) {
+                if ( !phoneReg.test(this.state.phoneNum) ) {
+                    Toast.show('请输入正确的手机号码', {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    })
+                }
+            } else {
+                Toast.show('请输入手机号码', {
+                    shadow: true,
+                    position: Toast.positions.CENTER
+                })
+                return;
+            }
+
+            if (this.state.verificationText == "发送验证码") {
+                // 允许 发送请求
+                let codeSub = 5;
+                this.setState({
+                    verificationText: codeSub + "s"
+                })
+                interVal = setInterval(() => {
+                    codeSub--;
+                    if (codeSub < 1) {
+                        codeSub = "发送验证码";
+                        interVal && clearInterval(interVal);
+                    }
+                    let text = (typeof codeSub === "number") ? codeSub + "s" : codeSub;
+                    this.setState({
+                        verificationText: text
+                    })
+                }, 1000)
+            }
+        }
+
+
         return (
             <View
                 style={ styles.wrapper }
             >
                 <TouchableOpacity
                     style={ styles.textWraper }
+                    onPress={ sendVerification }
                 >
                     <Text
                         style={ styles.text }
-                    >发送验证码</Text>
+                    >{ verificationText }</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -79,12 +135,43 @@ class LoginPage extends Component {
 
     // 登录
     login = () => {
+        let phoneNum = this.state.phoneNum || "";
+        let verificationCode = this.state.verificationCode || "";
 
+        if ( !phoneNum ) {
+            Toast.show('请输入手机号码', {
+                shadow: true,
+                position: Toast.positions.CENTER
+            })
+        }
+
+        if ( !verificationCode ) {
+            Toast.show('请输入验证码', {
+                shadow: true,
+                position: Toast.positions.CENTER
+            })
+        }
     }
 
     // 跳转到账号登录
     accountLogin = () => {
         this.props.navigation.navigate('accountLogin')
+    }
+
+    // 获取手机号码
+    getPhone = phone => {
+        let phoneNum = phone && phone.trim() || "";
+        this.setState({
+            phoneNum
+        })
+    }
+
+    // 获取验证码
+    getVerification = verification => {
+        let verificationCode = verification && verification.trim() || "";
+        this.setState({
+            verificationCode
+        })
     }
 
     render() {
@@ -102,6 +189,9 @@ class LoginPage extends Component {
                         leftText="+86"
                         placeholder="请输入您的手机号码"
                         rightFlag={ false }
+                        keyboardType="numeric"
+                        maxLength={ 11 }
+                        onChange={ this.getPhone }
                     />
                     <Tab
                         style={{
@@ -111,6 +201,7 @@ class LoginPage extends Component {
                         placeholder="请输入短信验证码"
                         rightFlag={ true }
                         HTMLTemplate={ this.sendMessage }
+                        onChange={ this.getVerification }
                     />
                 </View>
                 <Text

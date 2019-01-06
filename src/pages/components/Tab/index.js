@@ -29,6 +29,7 @@ const styles = {
         width: 200,
         height: 50,
         fontSize: 16,
+        padding: 0,
     },
     rightBox: {
         flexDirection: "row",
@@ -51,17 +52,26 @@ class Tab extends Component {
             leftText,
             placeholder,
             style,
-            HTMLTemplate
+            HTMLTemplate,
+            onChange,
+            keyboardType,
+            maxLength,
+            key,
+            secureTextEntry,
+            onBlur
         } = this.props;
         const {
             rightBoxRight
         } = this.state;
+        console.log('-----+++++>')
+        console.log(secureTextEntry)
         return (
             <View
                 style={{
                     ...styles.wrapper,
                     ...style
                 }}
+                key={ key || "___" }
             >
                 <View
                     style={ styles.leftBox }
@@ -73,6 +83,14 @@ class Tab extends Component {
                         style={ styles.textInput }
                         placeholder={ placeholder }
                         placeholderText="#949494"
+                        underlineColorAndroid="transparent"
+                        textAlignVertical='top'
+                        clearButtonMode="always"
+                        keyboardType={ keyboardType || "default" }
+                        maxLength={ maxLength || 100000}
+                        onChangeText={ (text) => { onChange && onChange(text) } }
+                        secureTextEntry={ secureTextEntry || false }
+                        onBlur={ () => { onBlur && onBlur() } }
                     />
                 </View>
                 {
