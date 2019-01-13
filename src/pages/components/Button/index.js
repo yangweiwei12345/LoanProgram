@@ -38,7 +38,6 @@ class Button extends Component {
             style,
             textColor
         } = this.props;
-        console.log(style)
         return (
             <TouchableOpacity
                 style={{

@@ -14,7 +14,8 @@ const {
     SettingPage,
     LoginPage,
     accountLoginPage,
-    forgetPasswordPage
+    forgetPasswordPage,
+    createAccountPage
 } = Pages;
 
 const stackConfig = {
@@ -82,6 +83,7 @@ const MyStack = createStackNavigator({
     Login: { screen: LoginPage },    
     accountLogin: { screen: accountLoginPage },  
     forgetPassword: { screen: forgetPasswordPage },  
+    createAccount: { screen: createAccountPage },  
 }, {
     ...stackConfig,
     ...barConfig

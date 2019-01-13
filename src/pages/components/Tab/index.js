@@ -5,10 +5,11 @@ import {
     TextInput,
     TouchableOpacity
 } from 'react-native';
+import { PX2DP_W, PX2DP_H } from '../../../utils';
 
 const styles = {
     wrapper: {
-        height: 50,
+        height: PX2DP_H(50),
         paddingLeft: 25,
         justifyContent: "space-between",
         alignItems: "center",
@@ -21,15 +22,20 @@ const styles = {
         alignItems: "center",     
     },
     leftText: {
-        width: 60,
+        width: PX2DP_W(60),
         color: "#230E02",
         fontSize: 16,
     },
     textInput: {
-        width: 200,
-        height: 50,
+        width: PX2DP_W(200),
+        height: PX2DP_H(50),
         fontSize: 16,
         padding: 0,
+    },
+    textInputW: {
+        flex: 1,
+        paddingRight: 20,
+        fontSize: 16,
     },
     rightBox: {
         flexDirection: "row",
@@ -58,13 +64,19 @@ class Tab extends Component {
             maxLength,
             key,
             secureTextEntry,
-            onBlur
+            onBlur,
+            editable,
+            value,
+            noClear,
+            textInputStyle
         } = this.props;
         const {
             rightBoxRight
         } = this.state;
-        console.log('-----+++++>')
-        console.log(secureTextEntry)
+        const baseStyle = rightBoxRight ? styles.textInput : styles.textInputW;
+        const textInputBaseStyle = {
+            ...baseStyle
+        }
         return (
             <View
                 style={{
@@ -80,23 +92,28 @@ class Tab extends Component {
                         style={ styles.leftText }
                     >{ leftText }</Text>
                     <TextInput
-                        style={ styles.textInput }
+                        style={{
+                            ...textInputBaseStyle,
+                            ...textInputStyle
+                        }}
                         placeholder={ placeholder }
                         placeholderText="#949494"
                         underlineColorAndroid="transparent"
                         textAlignVertical='top'
-                        clearButtonMode="always"
+                        clearButtonMode={ noClear ? "never" : "always" }
                         keyboardType={ keyboardType || "default" }
                         maxLength={ maxLength || 100000}
                         onChangeText={ (text) => { onChange && onChange(text) } }
                         secureTextEntry={ secureTextEntry || false }
                         onBlur={ () => { onBlur && onBlur() } }
+                        editable={ JSON.stringify(editable) == "false" ? false : true }
+                        defaultValue={ value || "" }
                     />
                 </View>
                 {
                     rightBoxRight
                         ? <View
-                            style={ styles.rightBox }
+                            style={styles.rightBox}
                         >
                             { HTMLTemplate && HTMLTemplate() }
                         </View>

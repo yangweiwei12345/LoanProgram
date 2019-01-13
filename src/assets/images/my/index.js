@@ -11,6 +11,7 @@ const my = {
     three:          require('./three.png'),
     close:          require('./close.png'),
     open:           require('./open.png'),
+    refresh:        require('./shuaxin_icon.png')
 };
 
 export default my;

@@ -10,6 +10,8 @@ import Tab from '../components/Tab';
 import Button from '../components/Button';
 import { Images } from '../../assets';
 import Toast from 'react-native-root-toast';
+import axios from 'axios';
+import { PX2DP_W, PX2DP_H } from '../../utils';
 
 const styles = {
     wrapper: {
@@ -43,7 +45,7 @@ const styles = {
         marginTop: 23,
     },
     topBoxText1: {
-        color: "#8F93A1"
+        color: "#F64A38"
     },
     topBoxText2: {
         color: "#8F93A1"
@@ -53,13 +55,10 @@ const styles = {
     },
     imgBox: {
         marginTop: 8,
-        marginLeft: 8,
-        marginRight: 58,
         height: 9,
     },
     img: {
         width: "100%",
-        left: 35,
     },
     verificationInfo: {
         height: 50,
@@ -90,6 +89,9 @@ class accountLoginPage extends Component {
             repeatPwdFlag: true,
             newPwd: "",
             repeatPwd: "",
+            imageVerificationCode: "", // 图形验证码
+            Token: "", // token
+            verificationText: "重新发送",
         }
     }
 
@@ -97,43 +99,81 @@ class accountLoginPage extends Component {
         title: '忘记密码',
     };
 
+    componentDidMount() {
+        this.getToken();
+    }
+
+    // 请求Token
+    getToken = () => {
+        axios.post("https://www.raindropbox365.com/api/captcha/token?id=" + new Date().getTime())
+            .then(resp => {
+                if (resp && resp.status === 200) {
+                    this.setState({
+                        Token: resp.data,
+                        graphicVerificationCode: `https://www.raindropbox365.com/api/captcha/${ resp.data }.png`
+                    });
+                }
+            })
+            .catch(err => {
+                console.log(err.response)
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
+    }
+
     // 图形验证码 html
     imgVerificationCodeHTML = () => {
         const styles = {
-            text: {
-                color: "#9093A1"
-            },
-            textWraper: {
-                width: '100%',
-                height: '100%',
-                justifyContent: "center",
-                alignItems: "center"
-            },
             wrapper: {
                 width: '100%',
                 height: '100%',
-                justifyContent: "center",
+                justifyContent: "flex-end",
                 alignItems: "center",
-                borderLeftWidth: 1,
-                borderColor: "#EEEEEE" 
+                flexDirection: "row",
+            },
+            refreshBtn: {
+                width: PX2DP_W(20),
+                height: PX2DP_H(20),
+                marginLeft: 5,
+                marginRight: 5,
+            },
+            verificationImage: {
+                width: PX2DP_W(80),
+                height: PX2DP_H(29),
+            },
+            refreshImage: {
+                width: PX2DP_W(20),
+                height: PX2DP_H(20),
             }
         }
 
-        linkToPasswordPage = () => {
-            console.log('forget')
+        const imgUrl = this.state.graphicVerificationCode;
+
+        const refreshEvent = () => {
+            this.getToken();
         }
 
         return (
             <View
                 style={ styles.wrapper }
             >
+                <Image
+                    style={ styles.verificationImage }
+                    source={{ uri: imgUrl }}
+                />
                 <TouchableOpacity
-                    style={ styles.textWraper }
-                    onPress={ this.linkToPasswordPage }
+                    style={ styles.refreshBtn }
+                    onPress={ refreshEvent }
                 >
-                    <Text
-                        style={ styles.text }
-                    >忘记密码</Text>
+                    <Image
+                        style={ styles.refreshImg }
+                        source={ Images["refresh"] }
+                    />
                 </TouchableOpacity>
             </View>
         )
@@ -143,7 +183,7 @@ class accountLoginPage extends Component {
     verificationCodeHTML = () => {
         const styles = {
             text: {
-                color: "#9093A1"
+                color: "#F64A38"
             },
             textWraper: {
                 width: '100%',
@@ -161,57 +201,49 @@ class accountLoginPage extends Component {
             }
         }
 
-        linkToPasswordPage = () => {
-            console.log('forget')
-        }
+        const {
+            verificationText
+        } = this.state;
 
-        return (
-            <View
-                style={ styles.wrapper }
-            >
-                <TouchableOpacity
-                    style={ styles.textWraper }
-                    onPress={ this.linkToPasswordPage }
-                >
-                    <Text
-                        style={ styles.text }
-                    >忘记密码</Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
+        let interVal;
 
-    // 验证码 html
-    Verification = () => {
-        const styles = {
-            text: {
-                color: "#9093A1"
-            },
-            textWraper: {
-                width: '100%',
-                height: '100%',
-                justifyContent: "center",
-                alignItems: "center"
-            },
-            wrapper: {
-                width: '100%',
-                height: '100%',
-                justifyContent: "center",
-                alignItems: "center",
-                borderLeftWidth: 1,
-                borderColor: "#EEEEEE" 
+        const sendVerification = () => {
+
+            if (this.state.verificationText !== "重新发送") return;
+
+            if (this.state.verificationText == "重新发送") {
+                // 允许 发送请求
+                this.getSMSCode();
+                let codeSub = 60;
+                this.setState({
+                    verificationText: codeSub + "s"
+                })
+                interVal = setInterval(() => {
+                    codeSub--;
+                    if (codeSub < 1) {
+                        codeSub = "重新发送";
+                        interVal && clearInterval(interVal);
+                    }
+                    let text = (typeof codeSub === "number") ? codeSub + "s" : codeSub;
+                    this.setState({
+                        verificationText: text
+                    })
+                }, 1000)
             }
         }
+
+
         return (
             <View
                 style={ styles.wrapper }
             >
                 <TouchableOpacity
                     style={ styles.textWraper }
+                    onPress={ sendVerification }
                 >
                     <Text
                         style={ styles.text }
-                    >忘记密码</Text>
+                    >{ verificationText }</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -322,6 +354,44 @@ class accountLoginPage extends Component {
         this.props.navigation.navigate('accountLogin')
     }
 
+    /**
+     * 请求短信验证码
+     * @param { Object } params<phoneNum graphicVerkficationCode Token Callback>
+     */
+    getSMSCode = () => {
+        axios({
+            url: "https://www.raindropbox365.com/api/sms/send_captcha",
+            method: "post",
+            data: JSON.stringify({
+                "phone_number": this.state.phoneNum,
+                "digits": this.state.imgVerificationCode,
+                "token": this.state.Token
+            }),
+            headers: {
+                'Content-Type':'application/json;charset=UTF-8'
+            }
+        })
+        .then(resp => {
+            if (resp && resp.status !== 204) {
+                Toast.show('发送失败', {
+                    shadow: true,
+                    position: Toast.positions.CENTER
+                });
+                return;
+            }
+        })
+        .catch(err => {
+            console.log(err.response)
+            if (err && err.response) {
+                Toast.show(err.response.data, {
+                    shadow: true,
+                    position: Toast.positions.CENTER
+                });
+            }
+            
+        })
+    }
+
     steps1 = () => {
 
         if ( !this.state.phoneNum ) {
@@ -349,12 +419,34 @@ class accountLoginPage extends Component {
             return;
         }
 
-        this.setState({
-            pageSub: 1
-        }, () => {
-            styles.topBoxText1 = styles.redColor;
-            this.forceUpdate();
-        });
+        axios
+            .post('https://www.raindropbox365.com/api/captcha', {
+                digits: this.state.imgVerificationCode,
+                token: this.state.Token
+            })
+            .then(resp => {
+                if (resp && resp.status == 204) {
+                    this.getSMSCode();
+                    this.setState({
+                        pageSub: 1
+                    }, () => {
+                        styles.topBoxText2 = styles.redColor;
+                        this.forceUpdate();
+                    });
+                }
+            })
+            .catch(err => {
+                console.log(err.response)
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
+
+        
     }
 
     steps2 = () => {
@@ -367,13 +459,34 @@ class accountLoginPage extends Component {
             return;
         }
 
-        this.setState({
-            pageSub: 2
-        }, () => {
-            styles.topBoxText2 = styles.redColor;
-            this.forceUpdate();
-        })
-        
+        axios
+            .post(`https://www.raindropbox365.com/api/sms/verify`, {
+                phone_number: this.state.phoneNum,
+                sms_code: this.state.verificationCode
+            })
+            .then(resp => {
+                if (!resp) return;
+                if (resp) {
+                    if (resp.status == 200) {
+                        this.setState({
+                            pageSub: 2
+                        }, () => {
+                            styles.topBoxText3 = styles.redColor;
+                            this.forceUpdate();
+                        })
+                    }
+                }
+            })
+            .catch(err => {
+                console.log(err.response)
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
     }
 
     steps3 = () => {
@@ -398,15 +511,41 @@ class accountLoginPage extends Component {
             });
             return;
         } else {
-            styles.topBoxText3 = styles.redColor;
-            this.forceUpdate();
-            Toast.show('设置成功', {
-                shadow: true,
-                position: Toast.positions.CENTER
-            });
-            setTimeout(() => {
-                this.props.navigation.navigate('Home');
-            }, 500)
+            axios
+                .put(`https://www.raindropbox365.com/api/users/account/${this.state.phoneNum}/password/sms`, {
+                    phone_number: this.state.phoneNum,
+                    sms_code: this.state.verificationCode,
+                    new_password: this.state.newPwd
+                })
+                .then(resp => {
+                    if (resp && resp.status == 204) {
+                        Toast.show('设置成功', {
+                            shadow: true,
+                            position: Toast.positions.CENTER
+                        });
+                        setTimeout(() => {
+                            this.props.navigation.navigate('Home');
+                        }, 500)
+                    } else {
+                        Toast.show('设置失败', {
+                            shadow: true,
+                            position: Toast.positions.CENTER
+                        });
+                        setTimeout(() => {
+                            this.props.navigation.navigate('Home');
+                        }, 500)
+                    }
+                })
+                .catch(err => {
+                    console.log(err.response)
+                    if (err && err.response) {
+                        Toast.show(err.response.data, {
+                            shadow: true,
+                            position: Toast.positions.CENTER
+                        });
+                    }
+                    
+                })
         }
     }
 
@@ -481,6 +620,12 @@ class accountLoginPage extends Component {
         }
     }
 
+    componentWillUnmount() {
+        styles.topBoxText1.color = "#F64A38";
+        styles.topBoxText2.color = "#8F93A1";
+        styles.topBoxText3.color = "#8F93A1";
+    }
+
     render() {
         const {
             pageSub,
@@ -513,6 +658,9 @@ class accountLoginPage extends Component {
                     leftText="验证码"
                     placeholder="请输入图形验证码"
                     rightFlag={true}
+                    textInputStyle={{
+                        width: PX2DP_W(150),
+                    }}
                     HTMLTemplate={this.imgVerificationCodeHTML}
                     onChange={ this.getImgVerification }
                 />
