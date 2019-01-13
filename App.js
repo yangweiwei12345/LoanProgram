@@ -15,7 +15,8 @@ const {
     SettingPage,
     LoginPage,
     accountLoginPage,
-    forgetPasswordPage
+    forgetPasswordPage,
+    createAccountPage
 } = Pages;
 
 const stackConfig = {
@@ -171,13 +172,15 @@ const RootStack = createStackNavigator({
         Tabs: {
             screen: TabNavigator
         },
+        ListDetail: { screen: ListDetailPage },
+        My: { screen: MyPage },    
         FeedBack: { screen: FeedBackPage },    
         Invitation: { screen: InvitationPage },    
         Setting: { screen: SettingPage },    
         Login: { screen: LoginPage },    
         accountLogin: { screen: accountLoginPage },  
-        forgetPassword: { screen: forgetPasswordPage },
-        ListDetail: { screen: ListDetailPage }
+        forgetPassword: { screen: forgetPasswordPage },  
+        createAccount: { screen: createAccountPage },  
     }, {
         ...stackConfig,
         ...barConfig

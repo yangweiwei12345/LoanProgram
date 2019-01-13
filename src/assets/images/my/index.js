@@ -8,7 +8,10 @@ const my = {
     Head:           require('./hs_icon.png'),
     invitationFried:require('./invitation.png'),
     one:            require('./one.png'),
-    three:            require('./three.png'),
+    three:          require('./three.png'),
+    close:          require('./close.png'),
+    open:           require('./open.png'),
+    refresh:        require('./shuaxin_icon.png')
 };
 
 export default my;

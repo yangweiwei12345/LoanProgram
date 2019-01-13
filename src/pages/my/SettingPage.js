@@ -4,6 +4,8 @@ import {
     View,
 } from 'react-native';
 import Button from '../components/Button';
+import axios from 'axios';
+import Toast from 'react-native-root-toast';
 
 const styles = {
     wrapper: {
@@ -38,7 +40,7 @@ class SettingPage extends Component {
         super(props);
 
         this.state = {
-            phone: "138****1234",
+            phone: "",
             versionInfo: "2.2.1 (2401)"
         }
     }
@@ -46,6 +48,48 @@ class SettingPage extends Component {
     static navigationOptions = {
         title: '设置中心',
     };
+
+    componentWillMount() {
+        this.getUserInfo();
+    }
+
+    logout = () => {
+        axios
+            .post("https://www.raindropbox365.com/api/sessions/logout")
+            .then(resp => {
+                if (resp) {
+                    if (resp.status == 204) {
+                        this.props.navigation.replace('My'); 
+                        // this.props.navigation.popToTop();
+                    }
+                }
+            }) 
+    }
+
+    getUserInfo = () => {
+        axios
+            .post("https://www.raindropbox365.com/api/sessions/check")
+            .then(resp => {
+                if (resp) {
+                    console.log(resp)
+                    if (resp.status == 200 && resp.data) {
+                        this.setState({
+                            phone: resp.data && resp.data.account || ""
+                        })
+                    }
+                }
+            })
+            .catch(err => {
+                console.log(err.response)
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
+    }
 
     render() {
         const {
@@ -78,9 +122,9 @@ class SettingPage extends Component {
                         backgroundColor: "transparent",
                         borderWidth: 1,
                         borderColor: "#666666",
-                        
                         marginTop: 30,
                     }}
+                    onPress={ this.logout }
                 />
             </View>
         );

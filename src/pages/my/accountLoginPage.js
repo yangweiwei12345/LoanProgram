@@ -8,6 +8,10 @@ import {
 } from 'react-native';
 import Tab from '../components/Tab';
 import Button from '../components/Button';
+import Toast from 'react-native-root-toast';
+import { Images } from '../../assets';
+import { PX2DP_W, PX2DP_H } from '../../utils';
+import axios from 'axios';
 
 const styles = {
     wrapper: {
@@ -35,14 +39,50 @@ const styles = {
 class accountLoginPage extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            verificationText: "发送验证码",
+            account: "", // 账号
+            password: "", // 密码
+            verificationCode: "", // 验证码
+            Token: "", // token
+            graphicVerificationCode: "", // 图形验证码
+        }
     }
 
     static navigationOptions = {
         title: '登录',
     };
 
+    componentDidMount = () => {
+        this.getToken();
+    }
+
+    // 请求Token
+    getToken = () => {
+        axios.post("https://www.raindropbox365.com/api/captcha/token?id=" + new Date().getTime())
+            .then(resp => {
+                if (resp && resp.status === 200) {
+                    this.setState({
+                        Token: resp.data,
+                        graphicVerificationCode: `https://www.raindropbox365.com/api/captcha/${ resp.data }.png`
+                    });
+                }
+            })
+            .catch(err => {
+                console.log(err.response)
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
+    }
+
     // 忘记密码 html
-    forgetPassword = () => {
+    forgetPasswordHTML = () => {
         const styles = {
             text: {
                 color: "#9093A1"
@@ -52,7 +92,6 @@ class accountLoginPage extends Component {
                 height: '100%',
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "red"
             },
             wrapper: {
                 width: '100%',
@@ -65,8 +104,7 @@ class accountLoginPage extends Component {
         }
 
         const linkToPasswordPage = () => {
-            console.log('忘记密码')
-            this.props.navigation.navigate('forgetPassword')
+            this.props.navigation.replace('forgetPassword')
         }
 
         return (
@@ -79,44 +117,96 @@ class accountLoginPage extends Component {
                 >
                     <Text
                         style={ styles.text }
-                    >忘记密码1</Text>
+                    >忘记密码</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    // 图形验证码 HTML
+    graphicVerificationCodeHTML = () => {
+        const styles = {
+            wrapper: {
+                width: '100%',
+                height: '100%',
+                justifyContent: "flex-end",
+                alignItems: "center",
+                flexDirection: "row",
+            },
+            refreshBtn: {
+                width: PX2DP_W(20),
+                height: PX2DP_H(20),
+                marginLeft: 5,
+                marginRight: 5,
+            },
+            verificationImage: {
+                width: PX2DP_W(80),
+                height: PX2DP_H(29),
+            },
+            refreshImage: {
+                width: PX2DP_W(20),
+                height: PX2DP_H(20),
+            }
+        }
+
+        const imgUrl = this.state.graphicVerificationCode;
+
+        const refreshEvent = () => {
+            this.getToken();
+        }
+
+        return (
+            <View
+                style={ styles.wrapper }
+            >
+                <Image
+                    style={ styles.verificationImage }
+                    source={{ uri: imgUrl }}
+                />
+                <TouchableOpacity
+                    style={ styles.refreshBtn }
+                    onPress={ refreshEvent }
+                >
+                    <Image
+                        style={ styles.refreshImg }
+                        source={ Images["refresh"] }
+                    />
                 </TouchableOpacity>
             </View>
         )
     }
 
     // 验证码 html
-    Verification = () => {
+    VerificationHTML = () => {
         const styles = {
-            text: {
-                color: "#9093A1"
-            },
-            textWraper: {
-                width: '100%',
-                height: '100%',
-                justifyContent: "center",
-                alignItems: "center"
-            },
             wrapper: {
                 width: '100%',
                 height: '100%',
-                justifyContent: "center",
+                flexDirection: 'row',
+                justifyContent: "space-between",
                 alignItems: "center",
-                borderLeftWidth: 1,
-                borderColor: "#EEEEEE" 
+            },
+            verificationCode: {
+            },
+            refreshBtn: {
+                width: PX2DP_W(19),
+                height: PX2DP_H(19),
+                marginLeft: 3,
+                marginRight: 3,
             }
         }
         return (
             <View
                 style={ styles.wrapper }
             >
-                <TouchableOpacity
-                    style={ styles.textWraper }
-                >
-                    <Text
-                        style={ styles.text }
-                    >忘记密码</Text>
-                </TouchableOpacity>
+                <Image
+                    style={ styles.verificationCode }
+                    source={ Images['setting'] }
+                />
+                <Image
+                    style={ styles.refreshBtn }
+                    source={ Images['invitation'] }
+                />
             </View>
         )
     }
@@ -124,12 +214,97 @@ class accountLoginPage extends Component {
     // 登录
     login = () => {
 
+        let account = this.state.account || '';
+        let password = this.state.password || '';
+        let verificationCode = this.state.verificationCode || '';
+        let token = this.state.Token || '';
+
+        if ( !account ) {
+            Toast.show('请输入账号', {
+                shadow: true,
+                position: Toast.positions.CENTER
+            });
+            return;
+        }
+        if ( !password ) {
+            Toast.show('请输入密码', {
+                shadow: true,
+                position: Toast.positions.CENTER
+            });
+            return;
+        }
+        if ( !verificationCode ) {
+            Toast.show('请输入图形验证码', {
+                shadow: true,
+                position: Toast.positions.CENTER
+            });
+            return;
+        }
+
+        axios.post("https://www.raindropbox365.com/api/sessions/login_captcha", {
+            account,
+            password,
+            digits: verificationCode,
+            token,
+        })
+            .then(resp => {
+                console.log(resp)
+                if (resp && resp.status === 200) {
+                    let userID = resp.data && resp.data.user_id;
+                    let account = resp.data && resp.data.account;
+                    Toast.show("登录成功", {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                    setTimeout(() => {
+                        this.props.navigation.replace("My");
+                    }, 500)
+                } else {
+                    Toast.show("登录失败", {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+            })
+            .catch(err => {
+                console.log(err.response)
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
+
+        
     }
 
-    // 跳转到账号登录
-    accountLogin = () => {
-        this.props.navigation.navigate('accountLogin')
+    // 获取账号
+    getAccount = accountNum => {
+        let account = accountNum && accountNum.trim();
+        this.setState({
+            account
+        })
     }
+
+    // 获取密码
+    getPassword = passwordNum => {
+        let password = passwordNum && passwordNum.trim();
+        this.setState({
+            password: passwordNum
+        })
+    }
+
+    // 获取图形验证码
+    getImgVerification = ver => {
+        let imageVerificationCode = ver && ver.trim() || "";
+        this.setState({
+            verificationCode: imageVerificationCode
+        })
+    }
+
+    
 
     render() {
         return (
@@ -146,6 +321,9 @@ class accountLoginPage extends Component {
                         leftText="账号"
                         placeholder="请输入您的账号"
                         rightFlag={ false }
+                        onChange={ this.getAccount }
+                        keyboardType="numeric"
+                        maxLength={ 11 }
                     />
                     <Tab
                         style={{
@@ -154,16 +332,21 @@ class accountLoginPage extends Component {
                         leftText="密码"
                         placeholder="请输入您的密码"
                         rightFlag={ true }
-                        HTMLTemplate={ this.forgetPassword }
+                        HTMLTemplate={ this.forgetPasswordHTML }
+                        onChange={ this.getPassword }
                     />
                     <Tab
                         style={{
                             marginTop: 10
                         }}
                         leftText="验证码"
-                        placeholder="请输入验证码"
+                        placeholder="请输入图形验证码"
                         rightFlag={ true }
-                        HTMLTemplate={ this.Verification }
+                        textInputStyle={{
+                            width: PX2DP_W(150),
+                        }}
+                        HTMLTemplate={ this.graphicVerificationCodeHTML }
+                        onChange={ this.getImgVerification }
                     />
                 </View>
                 <Button

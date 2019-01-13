@@ -9,7 +9,9 @@ import {
 } from 'react-native';
 import { Images } from '../../assets';
 import TabList from './TabList';
-
+import axios from 'axios';
+import Toast from 'react-native-root-toast';
+import { PX2DP_W, PX2DP_H } from '../../utils';
 const styles = {
     wrapper: {
         flex: 1,
@@ -21,31 +23,31 @@ const styles = {
     },
     infoBox: {
         width: "100%",
-        height: 208,
+        height: PX2DP_H(208),
         backgroundColor: '#FFF'
     },
     topBackGround: {
         width: '100%',
-        height: 198,
+        height: PX2DP_H(198),
         // backgroundColor: 'rgba(0,0,0,0)',
     },
     title: {
         width: '100%',
-        height: 30,
-        lineHeight: 30,
+        height: PX2DP_H(30),
+        lineHeight: PX2DP_H(30),
         textAlign: 'center',
         position: 'relative',
-        top: 20,
+        top: PX2DP_H(20),
         color: '#FFF',
         fontSize: 18,
     },
     portrait: {
-        width: 100,
-        height: 100,
+        width: PX2DP_W(100),
+        height: PX2DP_H(100),
         position: 'absolute',
-        bottom: 10,
+        bottom: PX2DP_H(10),
         left: '50%',
-        marginLeft: -50,
+        marginLeft: PX2DP_W(-50),
     }
 };
 
@@ -76,24 +78,82 @@ class My extends Component {
                     handleEvent: this.invitation
                 },
             ],
-            isLogin: false
+            isLogin: false,
+            userID: "",
+            phone: "",
         }
     }
 
+    componentDidMount() {
+        this.getUserInfo();
+    }
+
+    componentWillReceiveProps() {
+        console.log('进来了')
+    }
+
     feedBack = () => {
-        this.props.navigation.navigate('FeedBack')
+        this.getUserInfo(flag => {
+            if ( !flag ) {
+                this.props.navigation.replace('Login');
+            } else {
+                this.props.navigation.navigate('FeedBack')
+            }
+        })
     }
 
     setting = () => {
-        this.props.navigation.navigate('Setting')
+        this.getUserInfo(flag => {
+            if ( !flag ) {
+                this.props.navigation.replace('Login');
+            } else {
+                this.props.navigation.navigate('Setting')
+            }
+        })
     }
 
     invitation = () => {
-        this.props.navigation.navigate('Invitation')
+        this.getUserInfo(flag => {
+            if ( !flag ) {
+                this.props.navigation.replace('Login');
+            } else {
+                this.props.navigation.navigate('Invitation')
+            }
+        })
     }
 
     GoLogin = () => {
+        if (this.state.isLogin) return;
         this.props.navigation.navigate('Login')
+    }
+
+    getUserInfo = cb => {
+        axios
+            .post("https://www.raindropbox365.com/api/sessions/check")
+            .then(resp => {
+                if (resp) {
+                    if (resp.status == 200 && resp.data) {
+                        this.setState({
+                            phone: resp.data.account || "",
+                            userID: resp.data.user_id || "",
+                            isLogin: true
+                        })
+                        cb && cb(true);
+                    } else {
+                        cb && cb(false);
+                    }
+                }
+            })
+            .catch(err => {
+                console.log(err.response)
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
     }
 
     render() {
@@ -116,16 +176,15 @@ class My extends Component {
                             onPress={ this.GoLogin }
                             activeOpacity={ 1 }
                         >
-                            {
-                                isLogin
-                                    ?   <Image
+                        {
+                            isLogin
+                                ? <Image
                                         source={ Images['Head'] }
                                     />
-                                    : <Image
-                                        source={ Images['loginLogo'] }
-                                    />
-                            }
-                        </TouchableOpacity>
+                                : <Image
+                                    source={ Images['loginLogo'] }
+                                />
+                        }</TouchableOpacity> 
                     </ImageBackground>
                 </View>
 

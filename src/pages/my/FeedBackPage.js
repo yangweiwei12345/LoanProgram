@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 
 import Button from '../components/Button';
+import Toast from 'react-native-root-toast';
+import axios from 'axios';
 
 const styles = {
     wrapper: {
@@ -63,7 +65,48 @@ class FeedBackPage extends Component {
         let {
             textInputValue
         } = this.state;
-        console.log(textInputValue)
+
+        if ( !textInputValue ) {
+            Toast.show('请先填入要反馈的内容', {
+                shadow: true,
+                position: Toast.positions.CENTER
+            });
+        }
+
+        axios
+            .post("https://www.raindropbox365.com/api/feedback", {
+                detail: textInputValue
+            })
+            .then(resp => {
+                if (resp) {
+                    if (resp.status == 403) {
+                        Toast.show('请先登录', {
+                            shadow: true,
+                            position: Toast.positions.CENTER
+                        });
+                    } else if (resp.status == 204) {
+                        Toast.show('反馈成功', {
+                            shadow: true,
+                            position: Toast.positions.CENTER
+                        });
+                        this.props.navigation.navigate('My')
+                    }
+                }
+            })
+            .catch(err => {
+                console.log(err.response)
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
+    }
+
+    componentWillUnmount() {
+        this.props.navigation.replace('My');
     }
 
     render() {

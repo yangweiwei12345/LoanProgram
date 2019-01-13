@@ -5,6 +5,7 @@ import SettingPage from './SettingPage';
 import LoginPage from './LoginPage';
 import accountLoginPage from './accountLoginPage';
 import forgetPasswordPage from './forgetPasswordPage';
+import createAccountPage from './createAccountPage';
 
 export default {
     MyPage,
@@ -13,5 +14,6 @@ export default {
     SettingPage,
     LoginPage,
     accountLoginPage,
-    forgetPasswordPage
+    forgetPasswordPage,
+    createAccountPage
 };
