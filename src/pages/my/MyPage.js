@@ -50,6 +50,11 @@ const styles = {
 };
 
 class My extends Component {
+    static navigationOptions = {
+        headerTitle: '我的',
+        headerMode: 'none'
+    };
+
     constructor(props) {
         super(props);
 

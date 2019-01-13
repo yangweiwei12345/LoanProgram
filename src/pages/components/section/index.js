@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { PX2DP_H, PX2DP_W } from '../../../utils';
 import { Images, variable } from '../../../assets';
 
@@ -9,26 +9,33 @@ export default class Section extends Component {
     }
 
     render() {
+        const { data = {}, handleClick } = this.props;
+        let prop = data.logo_url ? { uri: data.logo_url } : Images.card_c_icon;
 
         return (
             <View style={hotStyles.hot_item}>
                 <View style={hotStyles.hot_item_tit}>
-                    <Image style={hotStyles.hot_item_tit_img} source={Images.card_c_icon} />
-                    <Text style={hotStyles.hot_item_tit_txt}>融360</Text>
+                    <Image style={hotStyles.hot_item_tit_img} source={prop} />
+                    <Text style={hotStyles.hot_item_tit_txt}>{ data.basic_info }</Text>
                 </View>
                 <View style={hotStyles.hot_item_body}>
                     <View style={hotStyles.hot_item_left}>
-                        <Text style={hotStyles.hot_item_left_money}>1000 - 5000</Text>
+                        <Text style={hotStyles.hot_item_left_money}>{ data.amount }</Text>
                         <Text style={hotStyles.hot_item_left_txt}>额度范围（元）</Text>
                     </View>
                     <View style={hotStyles.hot_item_center}></View>
                     <View style={hotStyles.hot_item_right}>
                         <View style={hotStyles.hot_item_right_txt}>
-                            <Text style={hotStyles.hot_item_right_tit}>融360放款速度：2小时</Text>
-                            <Text style={hotStyles.hot_item_right_tit}>参考月费率：0.83-2.33%</Text>
-                            <Text style={hotStyles.hot_item_right_tit}>贷款期限：15天</Text>
+                            <Text style={hotStyles.hot_item_right_tit}>融360放款速度：{ data.speed }</Text>
+                            <Text style={hotStyles.hot_item_right_tit}>参考月费率：{ data.interest }</Text>
+                            <Text style={hotStyles.hot_item_right_tit}>贷款期限：{ data.deadline }</Text>
                         </View>
-                        <Image style={hotStyles.hot_item_right_btn} source={Images.home_apply_bt} />
+                        <TouchableOpacity
+                            activeOpacity={.8}
+                            onPress={ handleClick ? handleClick : () => {} }
+                        >
+                            <Image style={hotStyles.hot_item_right_btn} source={Images.home_apply_bt} />
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -62,10 +69,10 @@ const hotStyles = StyleSheet.create({
         marginTop: 6,
     },
     hot_item_left: {
-
+        width: 70
     },
     hot_item_center: {
-        width: 2,
+        width: 1,
         height: 24,
         backgroundColor: '#eee',
         marginLeft: 10,
@@ -82,10 +89,13 @@ const hotStyles = StyleSheet.create({
         marginTop: 10
     },
     hot_item_right: {
+        display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1
     },
     hot_item_right_txt: {
+        flex: 1
     },
     hot_item_right_tit: {
         fontSize: 12,

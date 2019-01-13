@@ -45,6 +45,7 @@ class Button extends Component {
                     ...styles.defauleStyle,
                     ...style
                 }}
+                activeOpacity={.8}
                 onPress={() => (this.handlePress(onPress))}
             >
                 <Text

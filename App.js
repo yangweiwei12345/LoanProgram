@@ -8,6 +8,7 @@ const { primary, gray } = variable;
 const {
     HomePage,
     ListPage,
+    ListDetailPage,
     MyPage,
     FeedBackPage,
     InvitationPage,
@@ -19,6 +20,7 @@ const {
 
 const stackConfig = {
     mode: 'modal',
+    headerBackTitleVisible: false,
     defaultNavigationOptions: {
       gesturesEnabled: false,
     },
@@ -32,10 +34,11 @@ const stackConfig = {
         const { layout, position, scene } = sceneProps;
         const { index } = scene;
 
-        const height = layout.initHeight;
-        const translateY = position.interpolate({
+        // const height = layout.initHeight;
+        const width = layout.initWidth;
+        const translateX = position.interpolate({
           inputRange: [index - 1, index, index + 1],
-          outputRange: [height, 0, 0],
+          outputRange: [width, 0, 0],
         });
 
         const opacity = position.interpolate({
@@ -43,7 +46,7 @@ const stackConfig = {
           outputRange: [0, 1, 1],
         });
 
-        return { opacity, transform: [{ translateY }] };
+        return { opacity, transform: [{ translateX }] };
       },
     }),
 };
@@ -60,38 +63,41 @@ const barConfig = {
     }
 }
 
-const HomeStack = createStackNavigator({
-    Home: { screen: HomePage }
-}, {
-    ...stackConfig,
-    ...barConfig
-});
+const HomeStack = createStackNavigator(
+    {
+        HomePage: { screen: HomePage }
+    },
+    {
+        headerMode: 'none'
+    }
+);
 
-const ListStack = createStackNavigator({
-    List: { screen: ListPage }
-}, {
-    ...stackConfig,
-    ...barConfig
-});
+const ListStack = createStackNavigator(
+    {
+        ListPage: { 
+            screen: ListPage
+        }
+    },
+    {
+        headerMode: 'none'
+    });
 
-const MyStack = createStackNavigator({
-    My: { screen: MyPage },    
-    FeedBack: { screen: FeedBackPage },    
-    Invitation: { screen: InvitationPage },    
-    Setting: { screen: SettingPage },    
-    Login: { screen: LoginPage },    
-    accountLogin: { screen: accountLoginPage },  
-    forgetPassword: { screen: forgetPasswordPage },  
-}, {
-    ...stackConfig,
-    ...barConfig
-});
+const MyStack = createStackNavigator(
+    {
+        MyPage: {
+            screen: MyPage
+        }
+    }, 
+    {
+        headerMode: 'none'
+    }
+);
 
 const TabNavigator = createBottomTabNavigator({
 	Home: {
         screen: HomeStack,
         navigationOptions: ({ navigation }) => ({
-            tabBarLabel: "首页",
+            tabBarLabel: '首页',
             tabBarIcon: ({ focused }) => {
                 
                 let { isFocused } = navigation;
@@ -100,18 +106,14 @@ const TabNavigator = createBottomTabNavigator({
                         ? <Image style={{ width: 22, height: 22 }} source={Images["home"]} />
                         : <Image style={{ width: 22, height: 22 }} source={Images["home_active"]} />
                 )
-            },
-            tabBaronPress: () => {
-                navigation.navigate('Home')
             }
         })
     },
 	List: {
         screen: ListStack,
         navigationOptions: ({ navigation }) => ({
-            tabBarLabel: "列表",
+            tabBarLabel: '列表',
             tabBarIcon: ({ focused }) => {
-
                 let { isFocused } = navigation;
                 
                 return (
@@ -125,7 +127,7 @@ const TabNavigator = createBottomTabNavigator({
 	My: {
         screen: MyStack,
         navigationOptions:({ navigation }) => ({
-            tabBarLabel: "我的",
+            tabBarLabel: '我的',
             tabBarIcon: ({ focused }) => {
 
                 let { isFocused } = navigation;
@@ -139,7 +141,7 @@ const TabNavigator = createBottomTabNavigator({
         })
     },
 }, {
-    initialRouteName: "List",
+    initialRouteName: "Home",
     tabBarOptions: {
         activeTintColor: primary,
         inactiveTintColor: gray,
@@ -147,4 +149,38 @@ const TabNavigator = createBottomTabNavigator({
     },
 });
 
-export default createAppContainer(TabNavigator);
+TabNavigator.navigationOptions = ({ navigation }) => {
+    const {
+        routes,
+        index
+    } = navigation.state;
+    const navigationOptions = {};
+  
+    if (routes[index].routeName === 'Home') {
+        navigationOptions.title = '贷款超市'; 
+    } else if (routes[index].routeName === 'List') {
+        navigationOptions.title = '列表'; 
+    } else if (routes[index].routeName === 'My') {
+        navigationOptions.title = '我的';
+    }
+    
+    return navigationOptions;
+}
+
+const RootStack = createStackNavigator({
+        Tabs: {
+            screen: TabNavigator
+        },
+        FeedBack: { screen: FeedBackPage },    
+        Invitation: { screen: InvitationPage },    
+        Setting: { screen: SettingPage },    
+        Login: { screen: LoginPage },    
+        accountLogin: { screen: accountLoginPage },  
+        forgetPassword: { screen: forgetPasswordPage },
+        ListDetail: { screen: ListDetailPage }
+    }, {
+        ...stackConfig,
+        ...barConfig
+});
+
+export default createAppContainer(RootStack);

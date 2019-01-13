@@ -25,6 +25,8 @@ const activeDot = () => {
 
 export default class SwiperSlide extends Component {
     render(){
+        const { data } = this.props;
+
         return (
             <Swiper
                 style={styles.wrapper}
@@ -35,15 +37,13 @@ export default class SwiperSlide extends Component {
                 dot={<View style={{backgroundColor: '#F3F3F3', width: 5, height: 5, borderRadius: 3, marginLeft: 5, marginRight: 5, marginTop: 3, marginBottom: 3}} />}
                 activeDot={<View style={{backgroundColor: '#aaa', width: 5, height: 5, borderRadius: 3, marginLeft: 5, marginRight: 5, marginTop: 3, marginBottom: 3}} />}
             >
-                <View style={styles.slide}>
-                    <Image resizeMode='stretch' style={styles.image} source={require('../../../assets/test/1.jpg')} />
-                </View>
-                <View style={styles.slide}>
-                    <Image resizeMode='stretch' style={styles.image} source={require('../../../assets/test/1.jpg')} />
-                </View>
-                <View style={styles.slide}>
-                    <Image resizeMode='stretch' style={styles.image} source={require('../../../assets/test/1.jpg')} />
-                </View>
+                {
+                    data.map(item => {
+                        return (<View style={styles.slide} key={item.banner_id}>
+                                    <Image resizeMode='stretch' style={styles.image} source={{ uri: item.img }} />
+                                </View>)
+                    })
+                }
             </Swiper>
         );
     }

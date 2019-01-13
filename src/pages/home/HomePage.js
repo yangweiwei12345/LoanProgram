@@ -1,32 +1,95 @@
 import React, { Component } from 'react';
-import { Text, View, Button, ScrollView, StyleSheet, Image } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Image } from 'react-native';
+import axios from 'axios';
 
 import Swiper from '../components/swiper';
 import Container from '../components/container';
 import Section from '../components/section';
+import Button from '../components/Button';
 
 import { PX2DP_H, PX2DP_W } from '../../utils';
 import { Images, variable } from '../../assets';
 const { primary, gray } = variable;
 
-const bannerData = [{
-    img: Images.fast_a_icon,
-    txt: '高通过率'
-}, {
-    img: Images.interest_b_icon,
-    txt: '大额低息'
-}, {
-    img: Images.card_c_icon,
-    txt: '信用卡'
-}];
-
 export default class Home extends Component {
 
     static navigationOptions = {
-        title: '贷款超市',
+        headerTitle: '贷款超市',
     };
 
+    state = {
+        banner: [],
+        loanList: [],
+        bannerData: []
+    }
+
+    // 请求banner
+    getBannerData() {
+        let me = this;
+
+        axios.get('https://loan.hague.tech/api/banner?place=1001')
+            .then(function (response) {
+                if(response.status == 200) {
+                    const { data } = response;
+                    me.setState({
+                        banner: data || []
+                    });
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+
+    // 请求今日爆款列表
+    getLoanData() {
+        let me = this;
+
+        axios.get('https://loan.hague.tech/api/loan')
+            .then(function (response) {
+                if(response.status == 200) {
+                    const { data } = response;
+                    me.setState({
+                        loanList: data || []
+                    });
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+
+    // 请求三个圆图列表
+    getCircleData() {
+        let me = this;
+
+        axios.get('https://loan.hague.tech/api/banner?place=1002')
+            .then(function (response) {
+                if(response.status == 200) {
+                    const { data } = response;
+                    console.log(data);
+                    me.setState({
+                        bannerData: data || []
+                    });
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+
+    componentDidMount() {
+        this.getBannerData();
+        this.getLoanData();
+        this.getCircleData();
+    }
+
     render() {
+        const { navigation } = this.props;
+
         return (
             <ScrollView
                 style={styles.scroll_wrapper}
@@ -35,8 +98,8 @@ export default class Home extends Component {
                     <View
                         style={styles.header_wrapper}
                     >
-                        <Swiper />
-                        <Boxs data={bannerData} />
+                        <Swiper data={this.state.banner} />
+                        <Boxs data={this.state.bannerData} />
                     </View>
                 </View>
 
@@ -50,13 +113,18 @@ export default class Home extends Component {
                                 <Text style={styles.platform_money_txt}>1000 - 2000</Text>
                             </View>
                             <Text style={styles.platform_get_money}>3分钟下款</Text>
+                            <Button style={{ left: 0, marginLeft: 0, marginBottom: PX2DP_H(20) }} value="立即申请" onPress={() => {}} />
                         </View>
                     </Container>
 
                     <Title title="今日爆款" />
-                    <Container style={styles.container}>
-                        <Section />
-                    </Container>
+                    {
+                        (this.state.loanList || []).map(item => {
+                            return (<Container style={styles.container} key={item.loan_id}>
+                                        <Section data={item} handleClick={() => { navigation.navigate('ListDetail', { loan_id: item.loan_id }) }} />
+                                    </Container>)
+                        })
+                    }
                 </View>
             </ScrollView>
         );
@@ -65,10 +133,12 @@ export default class Home extends Component {
 
 const Box = (props) => {
     const { data } = props;
+    let uri = data.img ? { uri: data.img } : Images.fast_a_icon;
+
     return (
         <View style={styles.box}>
-            <Image resizeMode='stretch' style={styles.box_image} source={data.img} />
-            <Text style={styles.box_tit}>{data.txt}</Text>
+            <Image resizeMode='stretch' style={styles.box_image} source={uri} />
+            <Text style={styles.box_tit}>{data.name}</Text>
         </View>
     )
 }
@@ -78,8 +148,8 @@ const Boxs = (props) => {
     return (
         <View style={styles.boxs}>
             {
-                data.map(item => {
-                    return <Box data={item} />
+                data.map((item, index) => {
+                    return <Box key={index} data={item} />
                 })
             }
         </View>
