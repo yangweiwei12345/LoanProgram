@@ -173,7 +173,6 @@ const RootStack = createStackNavigator({
             screen: TabNavigator
         },
         ListDetail: { screen: ListDetailPage },
-        My: { screen: MyPage },    
         FeedBack: { screen: FeedBackPage },    
         Invitation: { screen: InvitationPage },    
         Setting: { screen: SettingPage },    

@@ -54,7 +54,8 @@ const styles = {
 class My extends Component {
     static navigationOptions = {
         headerTitle: '我的',
-        headerMode: 'none'
+        headerMode: 'none',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     constructor(props) {
@@ -93,38 +94,40 @@ class My extends Component {
     }
 
     feedBack = () => {
-        this.getUserInfo(flag => {
-            if ( !flag ) {
-                this.props.navigation.replace('Login');
-            } else {
-                this.props.navigation.navigate('FeedBack')
-            }
-        })
+        this.state.isLogin
+            ? this.props.navigation.navigate('FeedBack', {
+                callback: this.getUserInfo
+            })
+            : this.props.navigation.navigate('Login', {
+                callback: this.getUserInfo
+            });
     }
 
     setting = () => {
-        this.getUserInfo(flag => {
-            if ( !flag ) {
-                this.props.navigation.replace('Login');
-            } else {
-                this.props.navigation.navigate('Setting')
-            }
-        })
+        this.state.isLogin
+            ? this.props.navigation.navigate('Setting', {
+                callback: this.getUserInfo
+            })
+            : this.props.navigation.navigate('Login', {
+                callback: this.getUserInfo
+            });
     }
 
     invitation = () => {
-        this.getUserInfo(flag => {
-            if ( !flag ) {
-                this.props.navigation.replace('Login');
-            } else {
-                this.props.navigation.navigate('Invitation')
-            }
-        })
+        this.state.isLogin
+            ? this.props.navigation.navigate('Invitation', {
+                callback: this.getUserInfo
+            })
+            : this.props.navigation.navigate('Login', {
+                callback: this.getUserInfo
+            });
     }
 
     GoLogin = () => {
         if (this.state.isLogin) return;
-        this.props.navigation.navigate('Login')
+        this.props.navigation.navigate('Login', {
+            callback: this.getUserInfo
+        })
     }
 
     getUserInfo = cb => {
@@ -140,6 +143,9 @@ class My extends Component {
                         })
                         cb && cb(true);
                     } else {
+                        this.setState({
+                            isLogin: false
+                        })
                         cb && cb(false);
                     }
                 }
@@ -168,9 +174,9 @@ class My extends Component {
                         style={styles.topBackGround}
                         source={Images['mineBack']}
                     >
-                        <Text
+                        {/* <Text
                             style={ styles.title }
-                        >我的</Text>
+                        >我的</Text> */}
                         <TouchableOpacity
                             style={ styles.portrait }
                             onPress={ this.GoLogin }

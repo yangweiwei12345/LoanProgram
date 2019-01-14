@@ -52,6 +52,7 @@ class InvitationPage extends Component {
 
     static navigationOptions = {
         title: '邀请好友',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     componentDidMount(){

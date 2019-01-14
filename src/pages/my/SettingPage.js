@@ -47,6 +47,7 @@ class SettingPage extends Component {
 
     static navigationOptions = {
         title: '设置中心',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     componentWillMount() {
@@ -59,11 +60,20 @@ class SettingPage extends Component {
             .then(resp => {
                 if (resp) {
                     if (resp.status == 204) {
-                        this.props.navigation.replace('My'); 
-                        // this.props.navigation.popToTop();
+                        this.props.navigation.goBack();
+                        const cb = this.props.navigation.getParam('callback', '');
+                        cb && cb();
                     }
                 }
             }) 
+            .catch(err => {
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+            })
     }
 
     getUserInfo = () => {
