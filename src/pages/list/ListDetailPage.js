@@ -9,7 +9,8 @@ const { primary, gray } = variable;
 export default class ListDetail extends Component {
 
     static navigationOptions = {
-        headerTitle: '融360'
+        headerTitle: '融360',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     state = {
@@ -28,7 +29,7 @@ export default class ListDetail extends Component {
     // 请求详情
     getLoanDetail(id) {
         let me = this;
-        let url = 'https://loan.hague.tech/api/loan/' + id;
+        let url = 'https://www.raindropbox365.com/api/loan/' + id;
 
         axios.get(url)
             .then(function (response) {
@@ -87,7 +88,7 @@ export default class ListDetail extends Component {
                     </View>
                     <View style={styles.body_box}>
                         <View style={styles.body_list_tit}>
-                            <Image style={styles.body_list_tit_img} source={Images.one_icon}/>
+                            <Image style={styles.body_list_tit_img2} source={Images.two_icon}/>
                             <Text style={styles.body_list_tit_txt}>申请条件</Text>
                         </View>
                         <View style={styles.body_list_item}>
@@ -177,6 +178,10 @@ const styles = StyleSheet.create({
     },
     body_list_tit_img: {
         width: PX2DP_W(25),
+        height: PX2DP_W(20)
+    },
+    body_list_tit_img2: {
+        width: PX2DP_W(30),
         height: PX2DP_W(20)
     },
     body_list_tit_txt: {

@@ -9,35 +9,40 @@ export default class Section extends Component {
     }
 
     render() {
-        const { data = {}, handleClick } = this.props;
+        const { data = {}, handleClick, handleApplyClick } = this.props;
         let prop = data.logo_url ? { uri: data.logo_url } : Images.card_c_icon;
 
         return (
             <View style={hotStyles.hot_item}>
-                <View style={hotStyles.hot_item_tit}>
-                    <Image style={hotStyles.hot_item_tit_img} source={prop} />
-                    <Text style={hotStyles.hot_item_tit_txt}>{ data.basic_info }</Text>
-                </View>
-                <View style={hotStyles.hot_item_body}>
-                    <View style={hotStyles.hot_item_left}>
-                        <Text style={hotStyles.hot_item_left_money}>{ data.amount }</Text>
-                        <Text style={hotStyles.hot_item_left_txt}>额度范围（元）</Text>
+                <TouchableOpacity
+                    activeOpacity={.8}
+                    onPress={ handleClick ? handleClick : () => {} }
+                >
+                    <View style={hotStyles.hot_item_tit}>
+                        <Image style={hotStyles.hot_item_tit_img} source={prop} />
+                        <Text style={hotStyles.hot_item_tit_txt}>{ data.basic_info }</Text>
                     </View>
-                    <View style={hotStyles.hot_item_center}></View>
-                    <View style={hotStyles.hot_item_right}>
-                        <View style={hotStyles.hot_item_right_txt}>
-                            <Text style={hotStyles.hot_item_right_tit}>融360放款速度：{ data.speed }</Text>
-                            <Text style={hotStyles.hot_item_right_tit}>参考月费率：{ data.interest }</Text>
-                            <Text style={hotStyles.hot_item_right_tit}>贷款期限：{ data.deadline }</Text>
+                    <View style={hotStyles.hot_item_body}>
+                        <View style={hotStyles.hot_item_left}>
+                            <Text style={hotStyles.hot_item_left_money}>{ data.amount }</Text>
+                            <Text style={hotStyles.hot_item_left_txt}>额度范围（元）</Text>
                         </View>
-                        <TouchableOpacity
-                            activeOpacity={.8}
-                            onPress={ handleClick ? handleClick : () => {} }
-                        >
-                            <Image style={hotStyles.hot_item_right_btn} source={Images.home_apply_bt} />
-                        </TouchableOpacity>
+                        <View style={hotStyles.hot_item_center}></View>
+                        <View style={hotStyles.hot_item_right}>
+                            <View style={hotStyles.hot_item_right_txt}>
+                                <Text style={hotStyles.hot_item_right_tit}>融360放款速度：{ data.speed }</Text>
+                                <Text style={hotStyles.hot_item_right_tit}>参考月费率：{ data.interest }</Text>
+                                <Text style={hotStyles.hot_item_right_tit}>贷款期限：{ data.deadline }</Text>
+                            </View>
+                            <TouchableOpacity
+                                activeOpacity={.8}
+                                onPress={ handleApplyClick ? handleApplyClick : () => {} }
+                            >
+                                <Image style={hotStyles.hot_item_right_btn} source={Images.home_apply_bt} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
             </View>
         );
     }

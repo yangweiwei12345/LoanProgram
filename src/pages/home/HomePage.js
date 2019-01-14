@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, Image } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Image, Platform } from 'react-native';
 import axios from 'axios';
+import SplashScreen from 'react-native-splash-screen'
 
 import Swiper from '../components/swiper';
 import Container from '../components/container';
 import Section from '../components/section';
 import Button from '../components/Button';
+import Toast from 'react-native-root-toast';
 
 import { PX2DP_H, PX2DP_W } from '../../utils';
 import { Images, variable } from '../../assets';
@@ -27,7 +29,7 @@ export default class Home extends Component {
     getBannerData() {
         let me = this;
 
-        axios.get('https://loan.hague.tech/api/banner?place=1001')
+        axios.get('https://www.raindropbox365.com/api/banner?place=1001')
             .then(function (response) {
                 if(response.status == 200) {
                     const { data } = response;
@@ -46,7 +48,7 @@ export default class Home extends Component {
     getLoanData() {
         let me = this;
 
-        axios.get('https://loan.hague.tech/api/loan')
+        axios.get('https://www.raindropbox365.com/api/loan')
             .then(function (response) {
                 if(response.status == 200) {
                     const { data } = response;
@@ -65,7 +67,7 @@ export default class Home extends Component {
     getCircleData() {
         let me = this;
 
-        axios.get('https://loan.hague.tech/api/banner?place=1002')
+        axios.get('https://www.raindropbox365.com/api/banner?place=1002')
             .then(function (response) {
                 if(response.status == 200) {
                     const { data } = response;
@@ -81,7 +83,78 @@ export default class Home extends Component {
 
     }
 
+    getUserInfo = cb => {
+        axios
+            .post("https://www.raindropbox365.com/api/sessions/check")
+            .then(resp => {
+                if (resp) {
+                    if (resp.status == 200 && resp.data) {
+                        this.setState({
+                            phone: resp.data.account || "",
+                            userID: resp.data.user_id || "",
+                            isLogin: true
+                        })
+                        cb && cb(true);
+                    } else {
+                        cb && cb(false);
+                    }
+                }
+            })
+            .catch(err => {
+                if (err && err.response) {
+                    Toast.show(err.response.data, {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+                
+            })
+    }
+
+    apply = (id) => {
+        const me = this;
+        this.getUserInfo(flag => {
+            if ( !flag ) {
+                this.props.navigation.navigate('Login');
+            } else {
+                me.getApply(id);
+            }
+        })
+    }
+
+    // 申请
+    getApply(id) {
+        let me = this;
+
+        axios.post('https://www.raindropbox365.com/api/loan/' + id + '/apply')
+            .then(function (response) {
+                console.log(response);
+                if(response.status == 200 || response.status == 204) {
+                    Toast.show('申请成功', {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                } else {
+                    Toast.show('申请失败', {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                Toast.show('申请失败', {
+                    shadow: true,
+                    position: Toast.positions.CENTER
+                });
+            });
+
+    }
+
     componentDidMount() {
+        if(Platform.OS === "android") {
+            SplashScreen.hide();
+        }
         this.getBannerData();
         this.getLoanData();
         this.getCircleData();
@@ -113,7 +186,7 @@ export default class Home extends Component {
                                 <Text style={styles.platform_money_txt}>1000 - 2000</Text>
                             </View>
                             <Text style={styles.platform_get_money}>3分钟下款</Text>
-                            <Button style={{ left: 0, marginLeft: 0, marginBottom: PX2DP_H(20) }} value="立即申请" onPress={() => {}} />
+                            <Button style={{ left: 0, marginLeft: 0, marginBottom: PX2DP_H(20) }} value="立即申请" onPress={() => { }} />
                         </View>
                     </Container>
 
@@ -121,7 +194,7 @@ export default class Home extends Component {
                     {
                         (this.state.loanList || []).map(item => {
                             return (<Container style={styles.container} key={item.loan_id}>
-                                        <Section data={item} handleClick={() => { navigation.navigate('ListDetail', { loan_id: item.loan_id }) }} />
+                                        <Section data={item} handleClick={() => { navigation.navigate('ListDetail', { loan_id: item.loan_id }) }} handleApplyClick={ () => { this.apply(item.loan_id) }} />
                                     </Container>)
                         })
                     }

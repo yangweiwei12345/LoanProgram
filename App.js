@@ -59,7 +59,9 @@ const barConfig = {
         },
         headerTintColor: '#230E02',
         headerTitleStyle: {
+            flex: 1,
             fontWeight: 'bold',
+            textAlign: 'center'
         }
     }
 }
@@ -155,7 +157,8 @@ TabNavigator.navigationOptions = ({ navigation }) => {
         routes,
         index
     } = navigation.state;
-    const navigationOptions = {};
+    const navigationOptions = {
+    };
   
     if (routes[index].routeName === 'Home') {
         navigationOptions.title = '贷款超市'; 

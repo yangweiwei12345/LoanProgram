@@ -56,7 +56,7 @@ class ScrollView1 extends Component {
         const { offset, pageSize } = me.state;
         const limit = offset + pageSize;
 
-        axios.get('https://loan.hague.tech/api/loan?sort=speed&offset=' + offset + '&limit=' + limit)
+        axios.get('https://www.raindropbox365.com/api/loan?sort=speed&offset=' + offset + '&limit=' + limit)
             .then(function (response) {
                 if(response.status == 200) {
                     const { data } = response;
@@ -166,7 +166,7 @@ class ScrollView2 extends Component {
         const { offset, pageSize } = me.state;
         const limit = offset + pageSize;
 
-        axios.get('https://loan.hague.tech/api/loan?sort=interest&offset=' + offset + '&limit=' + limit)
+        axios.get('https://www.raindropbox365.com/api/loan?sort=interest&offset=' + offset + '&limit=' + limit)
             .then(function (response) {
                 if(response.status == 200) {
                     const { data } = response;
@@ -276,7 +276,7 @@ class ScrollView3 extends Component {
         const { offset, pageSize } = me.state;
         const limit = offset + pageSize;
 
-        axios.get('https://loan.hague.tech/api/banner?place=2001&&offset=' + offset + '&limit=' + limit)
+        axios.get('https://www.raindropbox365.com/api/banner?place=2001&&offset=' + offset + '&limit=' + limit)
             .then(function (response) {
                 if(response.status == 200) {
                     const { data } = response;
