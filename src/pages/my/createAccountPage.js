@@ -64,6 +64,7 @@ class CreateAccountPage extends Component {
 
     static navigationOptions = {
         title: '账号登录',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     // 登录
@@ -93,7 +94,13 @@ class CreateAccountPage extends Component {
             }
         })
             .then(resp => {
-                console.log(resp)
+                if (resp) {
+                    Toast.show("设置成功", {
+                        shadow: true,
+                        position: Toast.positions.CENTER
+                    });
+                    this.props.navigation.popToTop();
+                }
             })
             .catch(err => {
                 console.log(err.response)

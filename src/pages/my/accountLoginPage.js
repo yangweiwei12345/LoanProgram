@@ -52,6 +52,7 @@ class accountLoginPage extends Component {
 
     static navigationOptions = {
         title: '登录',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     componentDidMount = () => {
@@ -104,7 +105,10 @@ class accountLoginPage extends Component {
         }
 
         const linkToPasswordPage = () => {
-            this.props.navigation.replace('forgetPassword')
+            const cb = this.props.navigation.getParam('callback', '');
+            this.props.navigation.replace('forgetPassword', {
+                callback: cb
+            })
         }
 
         return (
@@ -257,7 +261,9 @@ class accountLoginPage extends Component {
                         position: Toast.positions.CENTER
                     });
                     setTimeout(() => {
-                        this.props.navigation.replace("My");
+                        const cb = this.props.navigation.getParam('callback', '');
+                        cb && cb();
+                        this.props.navigation.popToTop();
                     }, 500)
                 } else {
                     Toast.show("登录失败", {

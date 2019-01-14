@@ -97,6 +97,7 @@ class accountLoginPage extends Component {
 
     static navigationOptions = {
         title: '忘记密码',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     componentDidMount() {
@@ -467,14 +468,12 @@ class accountLoginPage extends Component {
             .then(resp => {
                 if (!resp) return;
                 if (resp) {
-                    if (resp.status == 200) {
-                        this.setState({
-                            pageSub: 2
-                        }, () => {
-                            styles.topBoxText3 = styles.redColor;
-                            this.forceUpdate();
-                        })
-                    }
+                    this.setState({
+                        pageSub: 2
+                    }, () => {
+                        styles.topBoxText3 = styles.redColor;
+                        this.forceUpdate();
+                    })
                 }
             })
             .catch(err => {
@@ -524,6 +523,8 @@ class accountLoginPage extends Component {
                             position: Toast.positions.CENTER
                         });
                         setTimeout(() => {
+                            const cb = this.props.navigation.getParam('callback', '');
+                            cb && cb();
                             this.props.navigation.navigate('Home');
                         }, 500)
                     } else {

@@ -52,6 +52,7 @@ class FeedBackPage extends Component {
 
     static navigationOptions = {
         title: '反馈中心',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     textInputChange = (value) => {
@@ -71,6 +72,7 @@ class FeedBackPage extends Component {
                 shadow: true,
                 position: Toast.positions.CENTER
             });
+            return;
         }
 
         axios

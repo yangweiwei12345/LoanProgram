@@ -55,6 +55,7 @@ class LoginPage extends Component {
 
     static navigationOptions = {
         title: '登录',
+        headerRight: (<View style={{ width: 60, height: 60 }}></View>)
     };
 
     componentDidMount = () => {
@@ -314,17 +315,13 @@ class LoginPage extends Component {
                 console.log(resp)
                 if ( resp.status === 200 ) {
                     let data = resp.data || {};
-                    this.props.navigation.navigate('createAccount', {
-                        account: data.account,
-                        password: data.password,
-                        userId: data.user_id,
-                        roleId: data.role_id
-                    })
                     axios
                         .post('https://www.raindropbox365.com/api/sessions/todo')
                         .then(resp => {
                             console.log(resp)
                             if (resp && resp.data) {
+                                const cb = this.props.navigation.getParam('callback', '');
+                                cb && cb();
                                 if (resp.data.need_password == 0) {
                                     this.props.navigation.popToTop();
                                 } else if (resp.data.need_password == 1) {
@@ -376,7 +373,10 @@ class LoginPage extends Component {
 
     // 跳转到账号登录
     accountLogin = () => {
-        this.props.navigation.replace('accountLogin')
+        const cb = this.props.navigation.getParam('callback', '');
+        this.props.navigation.navigate('accountLogin', {
+            callback: cb
+        })
     }
 
     // 获取手机号码
